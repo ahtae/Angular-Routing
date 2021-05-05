@@ -3,6 +3,7 @@ import { Router, Event, NavigationStart, NavigationEnd, NavigationError, Navigat
 
 import { AuthService } from './user/auth.service';
 import { slideInAnimation } from './app.animation';
+import { MessageService } from './messages/message.service';
 
 @Component({
   selector: 'pm-root',
@@ -25,10 +26,24 @@ export class AppComponent {
     return '';
   }
 
-  constructor(private authService: AuthService, private router: Router) {
+  get isMessageDisplayed(): boolean {
+    return this.messageService.isDisplayed;
+  }
+
+  constructor(private authService: AuthService, private router: Router, private messageService: MessageService) {
     router.events.subscribe((routerEvent: Event) => {
       this.checkRouterEvent(routerEvent);
     });
+  }
+
+  hideMessages(): void {
+    this.router.navigate([{outlets: { popup: null}}]);
+    this.messageService.isDisplayed = false;
+  }
+
+  displayMessages(): void {
+    this.router.navigate([{outlets: {popup: ['messages']}}]);
+    this.messageService.isDisplayed = true;
   }
 
   checkRouterEvent(routerEvent: Event): void {
